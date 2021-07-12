@@ -23,9 +23,9 @@ int main(int argc, char* argv[])
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, false);
 
-	GLFWwindow* Window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Flappy-like", nullptr, nullptr);
+	GLFWwindow* Window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Flappy", nullptr, nullptr);
 	glfwMakeContextCurrent(Window);
-	
+
 	if (!Window)
 	{
 		std::cout << "WINDOW CREATE FAILED!" << std::endl;
@@ -57,14 +57,14 @@ int main(int argc, char* argv[])
 		DeltaTime = CurrentFrameTime - LastFrameTime;
 		LastFrameTime = CurrentFrameTime;
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-		Flappy.ProcessInput();
-		Flappy.Tick();
+		Flappy.ProcessInput(DeltaTime);
+		Flappy.Tick(DeltaTime);
 		Flappy.Render();
 
-        glfwSwapBuffers(Window);
+		glfwSwapBuffers(Window);
 		glfwPollEvents();
 	}
 

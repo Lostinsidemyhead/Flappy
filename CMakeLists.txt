@@ -1,11 +1,23 @@
 cmake_minimum_required(VERSION 3.21.0 FATAL_ERROR)
 
-set(PROJECT_NAME FlappyBird)
+set(PROJECT_NAME Flappy)
 
 add_executable(${PROJECT_NAME}
 	Source/Main.cpp
+	Source/Utils/Shader.h
+	Source/Utils/Shader.cpp
+	Source/Utils/Texture.h
+	Source/Utils/Texture.cpp
+	Source/Utils/ResourceManager.h
+	Source/Utils/ResourceManager.cpp
+	Source/Utils/SpriteRenderer.h
+	Source/Utils/SpriteRenderer.cpp
 	Source/Game/Game.h
-	Source/Game/Game.cpp)
+	Source/Game/Game.cpp
+	Source/Game/Actor.h
+	Source/Game/Actor.cpp
+	Source/Game/ObstaclesGenerator.h
+	Source/Game/ObstaclesGenerator.cpp)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
@@ -26,4 +38,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAK
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy_directory
-					${CMAKE_SOURCE_DIR}/Content $<TARGET_FILE_DIR:${PROJECT_NAME}>/Content)
+					${CMAKE_SOURCE_DIR}/Resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/Resources)
