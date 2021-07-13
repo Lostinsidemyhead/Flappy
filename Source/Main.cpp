@@ -57,10 +57,9 @@ int main(int argc, char* argv[])
 		DeltaTime = CurrentFrameTime - LastFrameTime;
 		LastFrameTime = CurrentFrameTime;
 
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Flappy.ProcessInput(DeltaTime);
 		Flappy.Tick(DeltaTime);
 		Flappy.Render();
 
@@ -74,8 +73,12 @@ int main(int argc, char* argv[])
 
 void glfwKeyCallback(GLFWwindow* Window, int Key, int ScannedCode, int Action, int Mode)
 {
-	if (Key == GLFW_KEY_ESCAPE && ScannedCode == GLFW_PRESS)
+	if (Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(Window, GL_TRUE);
+	}
+	else
+	{
+		Flappy.ProcessInput(Key);
 	}
 }

@@ -16,8 +16,10 @@ add_executable(${PROJECT_NAME}
 	Source/Game/Game.cpp
 	Source/Game/Actor.h
 	Source/Game/Actor.cpp
-	Source/Game/ObstaclesGenerator.h
-	Source/Game/ObstaclesGenerator.cpp)
+	Source/Game/Player.h
+	Source/Game/Player.cpp
+	Source/Game/Obstacle.h
+	Source/Game/Obstacle.cpp)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 

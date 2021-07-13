@@ -1,5 +1,4 @@
-#ifndef SPRITE_RENDERER_H
-#define SPRITE_RENDERER_H
+#pragma once
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -23,5 +22,3 @@ private:
     // Initializes and configures the quad's buffer and vertex attributes
     void initRenderData();
 };
-
-#endif
