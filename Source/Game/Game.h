@@ -37,8 +37,6 @@ private:
 	Player* CurrentPlayer;
 	Obstacle* TestObstacle;
 
-	glm::vec2 ObstacleSize;
 
-	void CreateObstacle();
 	void GameOver();
 };

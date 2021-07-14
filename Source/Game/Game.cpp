@@ -1,5 +1,10 @@
 #include "Game.h"
 
+#include <functional>
+#include <chrono>
+#include <future>
+#include <cstdio>
+
 Game::Game(unsigned int Width, unsigned int Height)
 	: State(InProgress), Width(Width), Height(Height) {}
 
@@ -12,8 +17,6 @@ Game::~Game()
 
 void Game::Initialize() 
 {
-	ObstacleSize = glm::vec2(75.0f, Height);
-
 	ResourceManager::LoadShader("../Resources/Shaders/Vertex.txt", "../Resources/Shaders/Fragment.txt", nullptr, "Sprite");
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Width),
 		static_cast<float>(Height), 0.0f, -1.0f, 1.0f);
@@ -29,7 +32,10 @@ void Game::Initialize()
 	glm::vec2 PlayerPos = glm::vec2(PLAYER_SIZE.x, Height / 2.0f - PLAYER_SIZE.y / 2.0f);
 
 	CurrentPlayer = new Player(PlayerPos, PLAYER_SIZE, ResourceManager::GetTexture("Player"), static_cast<float>(Height) - PLAYER_SIZE.y/2.0f);
-	CreateObstacle();
+
+
+	auto ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
+	TestObstacle = ObstaclesGen->CreateObstacle();
 }
 
 void Game::Tick(float DeltaTime)
@@ -45,19 +51,8 @@ void Game::Tick(float DeltaTime)
 	float Distance = Velocity * DeltaTime;
 	CurrentPlayer->Move(glm::vec2(0, Distance));
 
-	//CreateObstacle();
+
 	TestObstacle->Move(glm::vec2(-200 * DeltaTime, 0));
-}
-
-void Game::CreateObstacle()
-{
-	auto ObstaclesGen = new ObstaclesGenerator(0, Height);
-
-	float ObstacleHeight = ObstaclesGen->GenerateObstacle();
-	glm::vec2 ObstaclePos = glm::vec2(Width, ObstacleHeight);
-	std::cout << ObstacleHeight << std::endl;
-
-	TestObstacle = new Obstacle(ObstaclePos, ObstacleSize, ResourceManager::GetTexture("Obstacle"), ObstaclesGen->GetHoleSize());
 }
 
 void Game::GameOver()

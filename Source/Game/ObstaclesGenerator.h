@@ -7,15 +7,18 @@
 #include <iostream>
 #include <random>
 
+const float OBSTACLE_WIDTH = 75.0f;
+
 class ObstaclesGenerator {
 public:
-	ObstaclesGenerator(int Min, int Max);
-	float GetHoleSize() { return HoleSize; }
-	float GenerateObstacle();
+	ObstaclesGenerator(float MinPosY, float MaxPosY, float StartPosX);
+	float GenerateObstacleHeight();
+	Obstacle* CreateObstacle();
 
 private:
-	float TopLimit;
-	float BottomLimit;
-	float HoleHeight;
+	float TopLimit, BottomLimit;
+	float HolePosY;
 	float HoleSize = 150.0f;
+	glm::vec2 ObstacleSize;
+	float PosX;
 };
