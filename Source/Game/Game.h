@@ -32,18 +32,21 @@ public:
 
 private:
 	unsigned int Width, Height;
-	GameState State;
 	SpriteRenderer* Sprite;
+	GameState State;
 
 	float PlayerVelocity = 200.0f;
 	Player* CurrentPlayer;
+	unsigned int Score;
+	
 	ObstaclesGenerator* ObstaclesGen;
-
+	std::vector<Obstacle*> Obstacles;
 	float ObstacleVelocity = 200.0f;
 	float MinDistanceBetweenObstacles = 200.0f;
-	std::vector<Obstacle*> Obstacles;
 
-	bool DetectCollision(Obstacle* DetectionObstacle);
 	void AddObstacle();
+	void ScoreCounting();
+	bool DetectCollision(Obstacle* DetectionObstacle);
+
 	void GameOver();
 };

@@ -7,6 +7,7 @@ Game::~Game()
 {
 	delete Sprite;
 	delete CurrentPlayer;
+	delete ObstaclesGen;
 	Obstacles.clear();
 }
 
@@ -31,6 +32,7 @@ void Game::Initialize()
 	
 	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
 	AddObstacle();
+	Score = 0;
 }
 
 void Game::Tick(float DeltaTime)
@@ -59,6 +61,12 @@ void Game::Tick(float DeltaTime)
 		}
 
 		ObstacleItem->Move(glm::vec2(-ObstacleVelocity * DeltaTime, 0));
+	}
+
+	if (!Obstacles.empty()
+		&& Obstacles[0]->GetPosition().x + ObstaclesGen->ObstacleWidth <= 0)
+	{
+		Obstacles.erase(Obstacles.begin());
 	}
 }
 
