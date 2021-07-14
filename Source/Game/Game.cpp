@@ -1,10 +1,5 @@
 #include "Game.h"
 
-#include <functional>
-#include <chrono>
-#include <future>
-#include <cstdio>
-
 Game::Game(unsigned int Width, unsigned int Height)
 	: State(InProgress), Width(Width), Height(Height) {}
 
@@ -12,7 +7,7 @@ Game::~Game()
 {
 	delete Sprite;
 	delete CurrentPlayer;
-	//delete TestObstacle;
+	Obstacles.clear();
 }
 
 void Game::Initialize() 
@@ -35,6 +30,7 @@ void Game::Initialize()
 								static_cast<float>(Height) - PLAYER_SIZE.y/2.0f);
 	
 	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
+	AddObstacle();
 }
 
 void Game::Tick(float DeltaTime)
@@ -42,19 +38,28 @@ void Game::Tick(float DeltaTime)
 	//if (State != InProgress) return;
 	
 	if (CurrentPlayer->GetPosition().y < CurrentPlayer->GetSize().y/2
-		|| CurrentPlayer->GetPosition().y > Height - CurrentPlayer->GetSize().y/2)
+		|| CurrentPlayer->GetPosition().y > (Height - CurrentPlayer->GetSize().y/2))
 	{
 		GameOver();
 	}
 
 	CurrentPlayer->Move(glm::vec2(0, PlayerVelocity * DeltaTime));
 
-	Obstacles.push_back(ObstaclesGen->CreateObstacle());
+	if (!Obstacles.empty()
+		&& Obstacles.back()->GetPosition().x < (Height - MinDistanceBetweenObstacles))
+	{
+		AddObstacle();
+	}
 
 	for (auto ObstacleItem : Obstacles)
 	{
 		ObstacleItem->Move(glm::vec2(-ObstacleVelocity * DeltaTime, 0));
 	}
+}
+
+void Game::AddObstacle()
+{
+	Obstacles.push_back(ObstaclesGen->CreateObstacle());
 }
 
 void Game::GameOver()
@@ -75,7 +80,7 @@ void Game::ProcessInput(int Key)
 
 void Game::Render() 
 {
-	if (State != InProgress) return;
+	//if (State != InProgress) return;
 
 	CurrentPlayer->Draw(*Sprite);
 

@@ -38,7 +38,9 @@ private:
 	ObstaclesGenerator* ObstaclesGen;
 
 	float ObstacleVelocity = 200.0f;
+	float MinDistanceBetweenObstacles = 200.0f;
 	std::vector<Obstacle*> Obstacles;
 
+	void AddObstacle();
 	void GameOver();
 };
