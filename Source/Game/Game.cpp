@@ -24,10 +24,10 @@ void Game::Initialize()
 	ResourceManager::LoadTexture("../Resources/Textures/Obstacle.png", true, "Obstacle");
 	ResourceManager::LoadTexture("../Resources/Textures/Jellyfish.png", true, "Player");
 	
-	glm::vec2 PlayerPos = glm::vec2(PLAYER_SIZE.x, Height / 2.0f - PLAYER_SIZE.y / 2.0f);
+	glm::vec2 PlayerPos = glm::vec2(PlayerSize.x, Height / 2.0f - PlayerSize.y / 2.0f);
 
-	CurrentPlayer = new Player(PlayerPos, PLAYER_SIZE, ResourceManager::GetTexture("Player"), 
-								static_cast<float>(Height) - PLAYER_SIZE.y/2.0f);
+	CurrentPlayer = new Player(PlayerPos, PlayerSize, ResourceManager::GetTexture("Player"),
+								static_cast<float>(Height) - PlayerSize.y/2.0f);
 	
 	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
 	AddObstacle();
@@ -35,7 +35,7 @@ void Game::Initialize()
 
 void Game::Tick(float DeltaTime)
 {
-	//if (State != InProgress) return;
+	if (State != InProgress) return;
 	
 	if (CurrentPlayer->GetPosition().y < CurrentPlayer->GetSize().y/2
 		|| CurrentPlayer->GetPosition().y > (Height - CurrentPlayer->GetSize().y/2))
@@ -53,8 +53,24 @@ void Game::Tick(float DeltaTime)
 
 	for (auto ObstacleItem : Obstacles)
 	{
+		if (DetectCollision(ObstacleItem))
+		{
+			GameOver();
+		}
+
 		ObstacleItem->Move(glm::vec2(-ObstacleVelocity * DeltaTime, 0));
 	}
+}
+
+bool Game::DetectCollision(Obstacle* DetectionObstacle)
+{
+	bool DetectionX = CurrentPlayer->GetPosition().x + PlayerSize.x >= DetectionObstacle->GetPosition().x
+					&& CurrentPlayer->GetPosition().x <= DetectionObstacle->GetPosition().x + ObstaclesGen->ObstacleWidth;
+
+	bool DetectionY = CurrentPlayer->GetPosition().y + PlayerSize.y >= DetectionObstacle->GetPosition().y
+					|| CurrentPlayer->GetPosition().y <= DetectionObstacle->GetPosition().y - ObstaclesGen->HoleSize;
+
+	return DetectionX && DetectionY;
 }
 
 void Game::AddObstacle()

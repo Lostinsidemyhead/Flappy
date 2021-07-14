@@ -6,7 +6,7 @@ ObstaclesGenerator::ObstaclesGenerator(float MinPosY, float MaxPosY, float Start
 	BottomLimit = static_cast<float>(MaxPosY);
 	HolePosY = (MaxPosY - MinPosY) / 2;
 	PosX = StartPosX;
-	ObstacleSize = glm::vec2(75.0f, MaxPosY - MinPosY);
+	ObstacleSize = glm::vec2(ObstacleWidth, MaxPosY - MinPosY);
 }
 
 float ObstaclesGenerator::GenerateObstacleHeight()

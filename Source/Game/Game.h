@@ -23,6 +23,8 @@ public:
 	Game(unsigned int Width, unsigned int Height);
 	~Game();
 
+	const glm::vec2 PlayerSize = glm::vec2(50.0f, 50.0f);
+
 	void Initialize();
 	void Tick(float DeltaTime);
 	void ProcessInput(int Key);
@@ -41,6 +43,7 @@ private:
 	float MinDistanceBetweenObstacles = 200.0f;
 	std::vector<Obstacle*> Obstacles;
 
+	bool DetectCollision(Obstacle* DetectionObstacle);
 	void AddObstacle();
 	void GameOver();
 };
