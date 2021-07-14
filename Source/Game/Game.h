@@ -45,7 +45,7 @@ private:
 	float MinDistanceBetweenObstacles = 200.0f;
 
 	void AddObstacle();
-	void ScoreCounting();
+	void ScoreCount(Obstacle* DetectionObstacle);
 	bool DetectCollision(Obstacle* DetectionObstacle);
 
 	void GameOver();

@@ -14,7 +14,7 @@ float ObstaclesGenerator::GenerateObstacleHeight()
 	float Range = BottomLimit - TopLimit;
 	std::random_device RD{};
 	std::mt19937 Generator{ RD() };
-	std::normal_distribution<> Random{ Range / 2,  Range / 4};
+	std::normal_distribution<> Random{ Range / 2,  Range / 5};
 	
 	HolePosY = Random(Generator);
 	
@@ -30,7 +30,6 @@ Obstacle* ObstaclesGenerator::CreateObstacle()
 {
 	float ObstacleHeight = GenerateObstacleHeight();
 	glm::vec2 ObstaclePos = glm::vec2(PosX, ObstacleHeight);
-	std::cout << ObstacleHeight << std::endl;
 
 	return new Obstacle(ObstaclePos, ObstacleSize, ResourceManager::GetTexture("Obstacle"), HoleSize);
 }

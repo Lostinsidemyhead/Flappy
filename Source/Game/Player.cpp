@@ -18,7 +18,7 @@ void Player::Move(glm::vec2 Distance)
 {
 	if (Position.y > JumpPosition)
 	{
-		Position.y -= Distance.y;
+		Position.y -= JumpSpeedCoef*Distance.y;
 	}
 	else
 	{

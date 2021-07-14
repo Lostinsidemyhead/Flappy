@@ -39,8 +39,8 @@ void Game::Tick(float DeltaTime)
 {
 	if (State != InProgress) return;
 	
-	if (CurrentPlayer->GetPosition().y < CurrentPlayer->GetSize().y/2
-		|| CurrentPlayer->GetPosition().y > (Height - CurrentPlayer->GetSize().y/2))
+	if (CurrentPlayer->GetPosition().y <= CurrentPlayer->GetSize().y/2
+		|| CurrentPlayer->GetPosition().y >= (Height - CurrentPlayer->GetSize().y/2))
 	{
 		GameOver();
 	}
@@ -60,6 +60,7 @@ void Game::Tick(float DeltaTime)
 			GameOver();
 		}
 
+		ScoreCount(ObstacleItem);
 		ObstacleItem->Move(glm::vec2(-ObstacleVelocity * DeltaTime, 0));
 	}
 
@@ -67,6 +68,17 @@ void Game::Tick(float DeltaTime)
 		&& Obstacles[0]->GetPosition().x + ObstaclesGen->ObstacleWidth <= 0)
 	{
 		Obstacles.erase(Obstacles.begin());
+	}
+}
+
+void Game::ScoreCount(Obstacle* DetectionObstacle)
+{
+	if (!DetectionObstacle->IsObstacleChecked()
+		&& CurrentPlayer->GetPosition().x >= DetectionObstacle->GetPosition().x + ObstaclesGen->ObstacleWidth)
+	{
+		Score++;
+		DetectionObstacle->SetObstacleChecked();
+		std::cout << Score << std::endl;
 	}
 }
 
@@ -80,6 +92,7 @@ bool Game::DetectCollision(Obstacle* DetectionObstacle)
 
 	return DetectionX && DetectionY;
 }
+
 
 void Game::AddObstacle()
 {

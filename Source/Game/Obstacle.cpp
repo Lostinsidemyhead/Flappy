@@ -10,7 +10,6 @@ Obstacle::Obstacle(glm::vec2 aPosition, glm::vec2 aSize, Texture aActorTexture, 
 
 void Obstacle::Draw(SpriteRenderer& Sprite)
 {
-	
 	Sprite.DrawSprite(ActorTexture, 
 		glm::vec2(Position.x, Position.y),
 		Size);

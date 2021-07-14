@@ -15,6 +15,7 @@ public:
 
 private:
 	float JumpHeight = 50.0f;
+	float JumpSpeedCoef = 1.5f;
 	float MinBottomPosition;
 	float JumpPosition;
 };
