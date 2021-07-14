@@ -12,7 +12,7 @@ Game::~Game()
 {
 	delete Sprite;
 	delete CurrentPlayer;
-	delete TestObstacle;
+	//delete TestObstacle;
 }
 
 void Game::Initialize() 
@@ -31,11 +31,10 @@ void Game::Initialize()
 	
 	glm::vec2 PlayerPos = glm::vec2(PLAYER_SIZE.x, Height / 2.0f - PLAYER_SIZE.y / 2.0f);
 
-	CurrentPlayer = new Player(PlayerPos, PLAYER_SIZE, ResourceManager::GetTexture("Player"), static_cast<float>(Height) - PLAYER_SIZE.y/2.0f);
-
-
-	auto ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
-	TestObstacle = ObstaclesGen->CreateObstacle();
+	CurrentPlayer = new Player(PlayerPos, PLAYER_SIZE, ResourceManager::GetTexture("Player"), 
+								static_cast<float>(Height) - PLAYER_SIZE.y/2.0f);
+	
+	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
 }
 
 void Game::Tick(float DeltaTime)
@@ -48,11 +47,14 @@ void Game::Tick(float DeltaTime)
 		GameOver();
 	}
 
-	float Distance = Velocity * DeltaTime;
-	CurrentPlayer->Move(glm::vec2(0, Distance));
+	CurrentPlayer->Move(glm::vec2(0, PlayerVelocity * DeltaTime));
 
+	Obstacles.push_back(ObstaclesGen->CreateObstacle());
 
-	TestObstacle->Move(glm::vec2(-200 * DeltaTime, 0));
+	for (auto ObstacleItem : Obstacles)
+	{
+		ObstacleItem->Move(glm::vec2(-ObstacleVelocity * DeltaTime, 0));
+	}
 }
 
 void Game::GameOver()
@@ -76,5 +78,9 @@ void Game::Render()
 	if (State != InProgress) return;
 
 	CurrentPlayer->Draw(*Sprite);
-	TestObstacle->Draw(*Sprite);
+
+	for (auto ObstacleItem : Obstacles)
+	{
+		ObstacleItem->Draw(*Sprite);
+	}
 }

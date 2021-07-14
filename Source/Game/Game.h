@@ -33,10 +33,12 @@ private:
 	GameState State;
 	SpriteRenderer* Sprite;
 
-	float Velocity = 200.0f;
+	float PlayerVelocity = 200.0f;
 	Player* CurrentPlayer;
-	Obstacle* TestObstacle;
+	ObstaclesGenerator* ObstaclesGen;
 
+	float ObstacleVelocity = 200.0f;
+	std::vector<Obstacle*> Obstacles;
 
 	void GameOver();
 };
