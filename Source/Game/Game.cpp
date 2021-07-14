@@ -1,15 +1,10 @@
 #include "Game.h"
 
+#include <fstream>
+#include <sstream>
+
 Game::Game(unsigned int Width, unsigned int Height)
 	: State(InProgress), Width(Width), Height(Height) {}
-
-Game::~Game()
-{
-	delete Sprite;
-	delete CurrentPlayer;
-	delete ObstaclesGen;
-	Obstacles.clear();
-}
 
 void Game::Initialize() 
 {
@@ -33,6 +28,7 @@ void Game::Initialize()
 	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
 	AddObstacle();
 	Score = 0;
+	GetHighScoreList();
 }
 
 void Game::Tick(float DeltaTime)
@@ -60,7 +56,7 @@ void Game::Tick(float DeltaTime)
 			GameOver();
 		}
 
-		ScoreCount(ObstacleItem);
+		ScoreCounting(ObstacleItem);
 		ObstacleItem->Move(glm::vec2(-ObstacleVelocity * DeltaTime, 0));
 	}
 
@@ -71,7 +67,7 @@ void Game::Tick(float DeltaTime)
 	}
 }
 
-void Game::ScoreCount(Obstacle* DetectionObstacle)
+void Game::ScoreCounting(Obstacle* DetectionObstacle)
 {
 	if (!DetectionObstacle->IsObstacleChecked()
 		&& CurrentPlayer->GetPosition().x >= DetectionObstacle->GetPosition().x + ObstaclesGen->ObstacleWidth)
@@ -80,6 +76,42 @@ void Game::ScoreCount(Obstacle* DetectionObstacle)
 		DetectionObstacle->SetObstacleChecked();
 		std::cout << Score << std::endl;
 	}
+}
+
+void Game::SaveCurrentScore()
+{
+	std::ofstream HighScores("HighScores.txt", std::ios_base::app);
+	if (HighScores.is_open())
+	{
+		HighScores << Score << "|";
+		HighScores.close();
+	}
+}
+
+std::vector<int> Game::GetHighScoreList()
+{
+	std::vector<int> AllScores;
+	auto Buffer = std::ostringstream{};
+	std::ifstream HighScores("HighScores.txt");
+
+	if (HighScores.is_open())
+	{
+		Buffer << HighScores.rdbuf();
+	}
+
+	std::string Values = Buffer.str();
+	std::string Delimiter = "|";
+	std::string SingleValue;
+	size_t Pos = 0;
+
+	while ((Pos = Values.find(Delimiter)) != std::string::npos)
+	{
+		SingleValue = Values.substr(0, Pos);
+		AllScores.push_back(std::stoi(SingleValue));
+		Values.erase(0, Pos + Delimiter.length());
+	}
+	std::sort(AllScores.begin(), AllScores.end());
+	return AllScores;
 }
 
 bool Game::DetectCollision(Obstacle* DetectionObstacle)
@@ -93,7 +125,6 @@ bool Game::DetectCollision(Obstacle* DetectionObstacle)
 	return DetectionX && DetectionY;
 }
 
-
 void Game::AddObstacle()
 {
 	Obstacles.push_back(ObstaclesGen->CreateObstacle());
@@ -101,6 +132,7 @@ void Game::AddObstacle()
 
 void Game::GameOver()
 {
+	SaveCurrentScore();
 	std::cout << "GAME OVER" << std::endl;
 	State = GameState::GameOver;
 }
@@ -125,4 +157,12 @@ void Game::Render()
 	{
 		ObstacleItem->Draw(*Sprite);
 	}
+}
+
+Game::~Game()
+{
+	delete Sprite;
+	delete CurrentPlayer;
+	delete ObstaclesGen;
+	Obstacles.clear();
 }
