@@ -8,10 +8,10 @@
 
 class Obstacle : public Actor {
 public:
-	Obstacle(glm::vec2 aPosition, glm::vec2 aSize, Texture aActorTexture, float aHoleHeight);
+	Obstacle(glm::vec2 aPosition, glm::vec2 aSize, Texture aActorTexture, float aHoleHSize);
+	
 	virtual void Draw(SpriteRenderer& Sprite) override;
 
 private:
-	float HoleHeight;
-	float HoleSize = 200;
+	float HoleSize;
 };

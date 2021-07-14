@@ -6,6 +6,8 @@
 #include "../Utils/SpriteRenderer.h"
 #include "Player.h"
 #include "Obstacle.h"
+#include "ObstaclesGenerator.h"
+#include <iostream>
 
 enum GameState : int{
 	WaitingToStart = 0,
@@ -14,8 +16,6 @@ enum GameState : int{
 }; 
 
 const glm::vec2 PLAYER_SIZE(50.0f, 50.0f);
-const glm::vec2 OBSTACLE_SIZE(100.f, 800.0f);
-
 class Player;
 
 class Game {
@@ -37,6 +37,8 @@ private:
 	Player* CurrentPlayer;
 	Obstacle* TestObstacle;
 
-	void GenerateObstacle();
+	glm::vec2 ObstacleSize;
+
+	void CreateObstacle();
 	void GameOver();
 };
