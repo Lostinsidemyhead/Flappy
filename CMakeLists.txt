@@ -12,6 +12,8 @@ add_executable(${PROJECT_NAME}
 	Source/Utils/ResourceManager.cpp
 	Source/Utils/SpriteRenderer.h
 	Source/Utils/SpriteRenderer.cpp
+	Source/Utils/TextRenderer.h
+	Source/Utils/TextRenderer.cpp
 	Source/Game/Game.h
 	Source/Game/Game.cpp
 	Source/Game/Actor.h
@@ -34,6 +36,9 @@ target_link_libraries(${PROJECT_NAME} glfw)
 
 add_subdirectory(External/glad)
 target_link_libraries(${PROJECT_NAME} glad)
+
+add_subdirectory(External/freetype)
+target_link_libraries(${PROJECT_NAME} freetype)
 
 include_directories(External/glm)
 include_directories(External/stb)
