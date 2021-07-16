@@ -116,7 +116,7 @@ void Game::ShowHighScores()
 			TableRowSize += 25.0f;
 		}
 
-		if (Score == 0) return;
+		if (State != GameState::GameOver) return;
 
 		std::stringstream PlayerScore;
 		PlayerScore << Score;
