@@ -45,6 +45,7 @@ private:
 	std::vector<Obstacle*> Obstacles;
 	float ObstacleVelocity = 200.0f;
 	float MinDistanceBetweenObstacles = 200.0f;
+	float GameSpeedIncrement = 0.005f;
 
 	bool IsHighResult = false;
 

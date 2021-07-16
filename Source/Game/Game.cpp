@@ -4,7 +4,7 @@
 #include <sstream>
 
 Game::Game(unsigned int Width, unsigned int Height)
-	: State(InProgress), Width(Width), Height(Height) {}
+	: State(WaitingToStart), Width(Width), Height(Height) {}
 
 void Game::Initialize() 
 {
@@ -67,6 +67,9 @@ void Game::Tick(float DeltaTime)
 	{
 		Obstacles.erase(Obstacles.begin());
 	}
+
+	PlayerVelocity += GameSpeedIncrement;
+	ObstacleVelocity += GameSpeedIncrement;
 }
 
 void Game::ScoreCounting(Obstacle* DetectionObstacle)
@@ -205,18 +208,15 @@ void Game::GameOver()
 
 void Game::ProcessInput(int Key)
 {
-	if (State != InProgress) return;
-
 	if (Key == GLFW_KEY_SPACE)
 	{
+		State = InProgress;
 		CurrentPlayer->Up();
 	}
 }
 
 void Game::Render() 
 {
-	//if (State != InProgress) return;
-
 	CurrentPlayer->Draw(*Sprite);
 
 	for (auto ObstacleItem : Obstacles)
@@ -224,9 +224,13 @@ void Game::Render()
 		ObstacleItem->Draw(*Sprite);
 	}
 
-	if (this->State == InProgress)
+	if (State == WaitingToStart)
 	{
+		Text->RenderText("Press SPACE to start", 250.0f, Height / 2, 1.0f);
+	}
 
+	if (State == InProgress)
+	{
 		std::stringstream ss; ss << Score;
 		Text->RenderText("Score:" + ss.str(), 5.0f, 5.0f, 1.0f);
 	}
