@@ -34,6 +34,7 @@ private:
 	unsigned int Width, Height;
 	SpriteRenderer* Sprite;
 	GameState State;
+	std::string PlayerName = "Player";
 
 	float PlayerVelocity = 200.0f;
 	Player* CurrentPlayer;
@@ -44,12 +45,15 @@ private:
 	float ObstacleVelocity = 200.0f;
 	float MinDistanceBetweenObstacles = 200.0f;
 
+	bool IsHighResult = false;
+
 	void AddObstacle();
 	bool DetectCollision(Obstacle* DetectionObstacle);
 
 	void ScoreCounting(Obstacle* DetectionObstacle);
-	void SaveCurrentScore();
-	std::vector<int> GetHighScoreList();
+	void ShowHighScores();
+	void SaveCurrentScoreIfRequired();
+	std::multimap<unsigned int, std::string, std::greater<int>> GetHighScoreList();
 
 	void GameOver();
 };

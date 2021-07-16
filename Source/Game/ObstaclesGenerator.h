@@ -10,7 +10,7 @@
 class ObstaclesGenerator {
 public:
 	const float ObstacleWidth = 75.0f;
-	const float HoleSize = 250.0f; //150
+	const float HoleSize =  250.0f; //150
 
 	ObstaclesGenerator(float MinPosY, float MaxPosY, float StartPosX);
 	float GenerateObstacleHeight();

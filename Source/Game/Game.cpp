@@ -28,7 +28,6 @@ void Game::Initialize()
 	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
 	AddObstacle();
 	Score = 0;
-	GetHighScoreList();
 }
 
 void Game::Tick(float DeltaTime)
@@ -74,26 +73,57 @@ void Game::ScoreCounting(Obstacle* DetectionObstacle)
 	{
 		Score++;
 		DetectionObstacle->SetObstacleChecked();
-		std::cout << Score << std::endl;
 	}
 }
 
-void Game::SaveCurrentScore()
+void Game::ShowHighScores()
+{
+	auto ScoreTable = GetHighScoreList();
+
+	if (IsHighResult)
+	{
+		for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
+		{
+			std::cout << it->second << ":" << it->first << std::endl;
+		}
+		IsHighResult = false;
+	}
+	else
+	{
+		for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
+		{
+			std::cout << it->second << ":" << it->first << std::endl;
+		}
+		std::cout<<"Cur: " << PlayerName << ":" << Score << std::endl;
+	}
+}
+
+void Game::SaveCurrentScoreIfRequired()
 {
 	std::ofstream HighScores("HighScores.txt", std::ios_base::app);
-	if (HighScores.is_open())
+	if (!HighScores.is_open()) return;
+
+	auto ScoreTable = GetHighScoreList();
+
+	for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
 	{
-		HighScores << Score << "|";
-		HighScores.close();
+		if (Score >= it->first || ScoreTable.size() < 5)
+		{
+			IsHighResult = true;
+			HighScores << PlayerName << ":";
+			HighScores << Score << "|";
+			HighScores.close();
+			break;
+		}
 	}
 }
 
-std::vector<int> Game::GetHighScoreList()
+std::multimap<unsigned int, std::string, std::greater<int>> Game::GetHighScoreList()
 {
-	std::vector<int> AllScores;
-	auto Buffer = std::ostringstream{};
-	std::ifstream HighScores("HighScores.txt");
+	std::multimap<unsigned int, std::string, std::greater<int>> ScoreTable;
+	std::fstream HighScores("HighScores.txt");
 
+	auto Buffer = std::ostringstream{};
 	if (HighScores.is_open())
 	{
 		Buffer << HighScores.rdbuf();
@@ -101,17 +131,43 @@ std::vector<int> Game::GetHighScoreList()
 
 	std::string Values = Buffer.str();
 	std::string Delimiter = "|";
-	std::string SingleValue;
 	size_t Pos = 0;
 
 	while ((Pos = Values.find(Delimiter)) != std::string::npos)
 	{
-		SingleValue = Values.substr(0, Pos);
-		AllScores.push_back(std::stoi(SingleValue));
+		auto PlayerScore = Values.substr(0, Pos);
+		auto Name = PlayerScore.substr(0, PlayerScore.find(":"));
+		auto Value = PlayerScore.substr(PlayerScore.find(":")+1);
+		ScoreTable.insert(std::pair<unsigned int, std::string>(std::stoi(Value), Name));
 		Values.erase(0, Pos + Delimiter.length());
 	}
-	std::sort(AllScores.begin(), AllScores.end());
-	return AllScores;
+	HighScores.close();
+
+	HighScores.open("HighScores.txt", std::ios_base::out | std::ios_base::trunc);
+	HighScores.close();
+
+	HighScores.open("HighScores.txt", std::ios_base::app);
+	int i = 0;
+	for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
+	{
+		i++;
+		if (i > 5)
+		{
+			ScoreTable.erase(it, ScoreTable.end());
+			break;
+		}
+	}
+
+	for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
+	{
+		HighScores << it->second << ":";
+		HighScores << it->first << "|";
+
+		std::cout << it->second << ":" << it->first << std::endl;
+	}
+	HighScores.close();
+
+	return ScoreTable;
 }
 
 bool Game::DetectCollision(Obstacle* DetectionObstacle)
@@ -132,7 +188,8 @@ void Game::AddObstacle()
 
 void Game::GameOver()
 {
-	SaveCurrentScore();
+	SaveCurrentScoreIfRequired();
+	ShowHighScores();
 	std::cout << "GAME OVER" << std::endl;
 	State = GameState::GameOver;
 }
