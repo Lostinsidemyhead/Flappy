@@ -101,9 +101,17 @@ void Game::ShowHighScores()
 void Game::SaveCurrentScoreIfRequired()
 {
 	std::ofstream HighScores("HighScores.txt", std::ios_base::app);
-	if (!HighScores.is_open()) return;
+	if (!HighScores.is_open() || Score == 0 ) return;
 
 	auto ScoreTable = GetHighScoreList();
+
+	if (ScoreTable.empty())
+	{
+		IsHighResult = true;
+		HighScores << PlayerName << ":";
+		HighScores << Score << "|";
+		HighScores.close();
+	}
 
 	for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
 	{
