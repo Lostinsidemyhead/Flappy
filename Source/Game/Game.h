@@ -13,6 +13,7 @@
 enum GameState : int{
 	WaitingToStart = 0,
 	InProgress,
+	AdditionlMenuOpened,
 	GameOver
 }; 
 
@@ -25,10 +26,10 @@ public:
 	~Game();
 
 	const glm::vec2 PlayerSize = glm::vec2(50.0f, 50.0f);
-
+	GameState GetGameState() { return State; }
 	void Initialize();
 	void Tick(float DeltaTime);
-	void ProcessInput(int Key);
+	void ProcessInput(int Key, int Action);
 	void Render();
 
 private:
@@ -60,4 +61,5 @@ private:
 	std::multimap<unsigned int, std::string, std::greater<int>> GetHighScoreList();
 
 	void GameOver();
+	void Restart();
 };

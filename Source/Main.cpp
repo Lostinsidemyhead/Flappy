@@ -75,13 +75,13 @@ int main(int argc, char* argv[])
 
 void glfwKeyCallback(GLFWwindow* Window, int Key, int ScannedCode, int Action, int Mode)
 {
-	if (Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS)
+	if (Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS && Flappy.GetGameState() == GameState::WaitingToStart)
 	{
 		glfwSetWindowShouldClose(Window, GL_TRUE);
 	}
 	else
 	{
-		Flappy.ProcessInput(Key);
+		Flappy.ProcessInput(Key, Action);
 	}
 }
 void glfwCharCallback(GLFWwindow* Window, unsigned int CodePoint)

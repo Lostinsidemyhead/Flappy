@@ -29,8 +29,10 @@ void Game::Initialize()
 								static_cast<float>(Height) - PlayerSize.y/2.0f);
 	
 	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
+	Obstacles.clear();
 	AddObstacle();
 	Score = 0;
+	IsHighResult = false;
 }
 
 void Game::Tick(float DeltaTime)
@@ -84,23 +86,42 @@ void Game::ScoreCounting(Obstacle* DetectionObstacle)
 
 void Game::ShowHighScores()
 {
+	Text->RenderText("Highscores" , Width / 2 - 70, Height / 2 - 130, 1.2f);
+
 	auto ScoreTable = GetHighScoreList();
+	int Number = 0;
+	float TableRowSize = Height / 2 - 90.0f;
 
 	if (IsHighResult)
 	{
 		for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
 		{
-			std::cout << it->second << ":" << it->first << std::endl;
+			Number++;
+			std::stringstream TableName, TableScore;
+			TableName << it->second;
+			TableScore << it->first;
+			Text->RenderText(std::to_string(Number) + ". " + TableName.str() + ": " + TableScore.str(), Width/2 - 60, TableRowSize, 1.0f);
+			TableRowSize += 25;
 		}
-		IsHighResult = false;
 	}
 	else
 	{
 		for (auto it = ScoreTable.begin(); it != ScoreTable.end(); ++it)
 		{
-			std::cout << it->second << ":" << it->first << std::endl;
+			Number++;
+			std::stringstream TableName, TableScore;
+			TableName << it->second;
+			TableScore << it->first;
+			Text->RenderText(std::to_string(Number) + ". " + TableName.str() + ": " + TableScore.str(), Width / 2 - 60, TableRowSize, 1.0f);
+			TableRowSize += 25.0f;
 		}
-		std::cout<<"Cur: " << PlayerName << ":" << Score << std::endl;
+
+		if (Score == 0) return;
+
+		std::stringstream PlayerScore;
+		PlayerScore << Score;
+		Text->RenderText("...", Width / 2.0f, TableRowSize, 1.0f);
+		Text->RenderText(PlayerName + ": " + PlayerScore.str(), Width / 2 - 60, TableRowSize + 25, 1.0f);
 	}
 }
 
@@ -141,19 +162,18 @@ std::multimap<unsigned int, std::string, std::greater<int>> Game::GetHighScoreLi
 	if (HighScores.is_open())
 	{
 		Buffer << HighScores.rdbuf();
-	}
+		std::string Values = Buffer.str();
+		std::string Delimiter = "|";
+		size_t Pos = 0;
 
-	std::string Values = Buffer.str();
-	std::string Delimiter = "|";
-	size_t Pos = 0;
-
-	while ((Pos = Values.find(Delimiter)) != std::string::npos)
-	{
-		auto PlayerScore = Values.substr(0, Pos);
-		auto Name = PlayerScore.substr(0, PlayerScore.find(":"));
-		auto Value = PlayerScore.substr(PlayerScore.find(":")+1);
-		ScoreTable.insert(std::pair<unsigned int, std::string>(std::stoi(Value), Name));
-		Values.erase(0, Pos + Delimiter.length());
+		while ((Pos = Values.find(Delimiter)) != std::string::npos)
+		{
+			auto PlayerScore = Values.substr(0, Pos);
+			auto Name = PlayerScore.substr(0, PlayerScore.find(":"));
+			auto Value = PlayerScore.substr(PlayerScore.find(":")+1);
+			ScoreTable.insert(std::pair<unsigned int, std::string>(std::stoi(Value), Name));
+			Values.erase(0, Pos + Delimiter.length());
+		}
 	}
 	HighScores.close();
 
@@ -201,21 +221,44 @@ void Game::AddObstacle()
 void Game::GameOver()
 {
 	SaveCurrentScoreIfRequired();
-	ShowHighScores();
-	std::cout << "GAME OVER" << std::endl;
 	State = GameState::GameOver;
 }
 
-void Game::ProcessInput(int Key)
+void Game::Restart()
 {
-	if (Key == GLFW_KEY_SPACE)
+	Initialize();
+	State = InProgress;
+}
+
+void Game::ProcessInput(int Key, int Action)
+{
+
+	if (Key == GLFW_KEY_SPACE && Action == GLFW_PRESS)
 	{
-		State = InProgress;
-		CurrentPlayer->Up();
+		switch (State) 
+		{
+		case InProgress:
+			CurrentPlayer->Up();
+			break;
+		case WaitingToStart:
+			State = InProgress;
+			break;
+		case GameState::GameOver:
+			Restart();
+			break;
+		}
+	}
+	if (Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS)
+	{
+		State = WaitingToStart;
+	}
+	if (Key == GLFW_KEY_M && Action == GLFW_PRESS && State == WaitingToStart)
+	{
+		State = AdditionlMenuOpened;
 	}
 }
 
-void Game::Render() 
+void Game::Render()
 {
 	CurrentPlayer->Draw(*Sprite);
 
@@ -224,15 +267,23 @@ void Game::Render()
 		ObstacleItem->Draw(*Sprite);
 	}
 
-	if (State == WaitingToStart)
+	switch (State)
 	{
+	case InProgress:
+		Text->RenderText("Score: " + std::to_string(Score), 10.0f, 10.0f, 1.0f);
+		break;
+	case WaitingToStart:
 		Text->RenderText("Press SPACE to start", 250.0f, Height / 2, 1.0f);
-	}
-
-	if (State == InProgress)
-	{
-		std::stringstream ss; ss << Score;
-		Text->RenderText("Score:" + ss.str(), 5.0f, 5.0f, 1.0f);
+		Text->RenderText("Press M to watch highscores", 200.0f, Height / 2 + 35, 1.0f);
+		break;
+	case GameState::GameOver:
+		Text->RenderText("GAME OVER", Width / 2 - 115, Height / 2 - 185, 1.7f);
+		Text->RenderText("Press SPACE to restart...", Width / 2 - 140, Height / 2 + 150, 1.0f);
+		ShowHighScores();
+		break;
+	case AdditionlMenuOpened:
+		ShowHighScores();
+		break;
 	}
 }
 
