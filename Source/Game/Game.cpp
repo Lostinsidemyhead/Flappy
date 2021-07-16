@@ -8,6 +8,9 @@ Game::Game(unsigned int Width, unsigned int Height)
 
 void Game::Initialize() 
 {
+	Text = new TextRenderer(this->Width, this->Height);
+	Text->Load("../Resources/Fonts/OtomanopeeOne.ttf", 24);
+
 	ResourceManager::LoadShader("../Resources/Shaders/Vertex.txt", "../Resources/Shaders/Fragment.txt", nullptr, "Sprite");
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(Width),
 		static_cast<float>(Height), 0.0f, -1.0f, 1.0f);
@@ -219,6 +222,13 @@ void Game::Render()
 	for (auto ObstacleItem : Obstacles)
 	{
 		ObstacleItem->Draw(*Sprite);
+	}
+
+	if (this->State == InProgress)
+	{
+
+		std::stringstream ss; ss << Score;
+		Text->RenderText("Score:" + ss.str(), 5.0f, 5.0f, 1.0f);
 	}
 }
 

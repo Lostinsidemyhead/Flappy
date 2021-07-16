@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Obstacle.h"
 #include "ObstaclesGenerator.h"
+#include "../Utils/TextRenderer.h"
 #include <iostream>
 
 enum GameState : int{
@@ -46,6 +47,8 @@ private:
 	float MinDistanceBetweenObstacles = 200.0f;
 
 	bool IsHighResult = false;
+
+	TextRenderer* Text;
 
 	void AddObstacle();
 	bool DetectCollision(Obstacle* DetectionObstacle);
