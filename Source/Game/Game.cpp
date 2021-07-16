@@ -162,8 +162,6 @@ std::multimap<unsigned int, std::string, std::greater<int>> Game::GetHighScoreLi
 	{
 		HighScores << it->second << ":";
 		HighScores << it->first << "|";
-
-		std::cout << it->second << ":" << it->first << std::endl;
 	}
 	HighScores.close();
 
