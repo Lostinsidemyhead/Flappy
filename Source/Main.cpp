@@ -7,7 +7,6 @@ const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
 
 void glfwKeyCallback(GLFWwindow* Window, int Key, int ScannedCode, int Action, int Mode);
-void glfwCharCallback(GLFWwindow* Window, unsigned int CodePoint);
 
 Game Flappy(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -41,7 +40,6 @@ int main(int argc, char* argv[])
 	}
 
 	glfwSetKeyCallback(Window, glfwKeyCallback);
-	glfwSetCharCallback(Window, glfwCharCallback);
 
 	// Конфигурация OpenGL
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -84,5 +82,3 @@ void glfwKeyCallback(GLFWwindow* Window, int Key, int ScannedCode, int Action, i
 		Flappy.ProcessInput(Key, Action);
 	}
 }
-void glfwCharCallback(GLFWwindow* Window, unsigned int CodePoint)
-{}

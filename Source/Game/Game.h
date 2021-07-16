@@ -14,8 +14,12 @@ enum GameState : int{
 	WaitingToStart = 0,
 	InProgress,
 	AdditionlMenuOpened,
+	NameInput,
+	Pause,
 	GameOver
 }; 
+
+const char Symbols [26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 
 const glm::vec2 PLAYER_SIZE(50.0f, 50.0f);
 class Player;
@@ -60,6 +64,7 @@ private:
 	void SaveCurrentScoreIfRequired();
 	std::multimap<unsigned int, std::string, std::greater<int>> GetHighScoreList();
 
+	void SetName();
+
 	void GameOver();
-	void Restart();
 };

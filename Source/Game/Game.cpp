@@ -224,12 +224,6 @@ void Game::GameOver()
 	State = GameState::GameOver;
 }
 
-void Game::Restart()
-{
-	Initialize();
-	State = InProgress;
-}
-
 void Game::ProcessInput(int Key, int Action)
 {
 
@@ -241,20 +235,52 @@ void Game::ProcessInput(int Key, int Action)
 			CurrentPlayer->Up();
 			break;
 		case WaitingToStart:
+			Initialize();
+			State = InProgress;
+			break;
+		case Pause:
 			State = InProgress;
 			break;
 		case GameState::GameOver:
-			Restart();
+			Initialize();
+			State = InProgress;
 			break;
 		}
 	}
 	if (Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS)
 	{
-		State = WaitingToStart;
+		switch (State)
+		{
+		case InProgress:
+			State = Pause;
+			break;
+		default:
+			State = WaitingToStart;
+			break;
+		}
 	}
 	if (Key == GLFW_KEY_M && Action == GLFW_PRESS && State == WaitingToStart)
 	{
 		State = AdditionlMenuOpened;
+	}
+	if (Key == GLFW_KEY_N && Action == GLFW_PRESS && State == WaitingToStart)
+	{
+		State = NameInput;
+	}
+	if (State == NameInput && Action == GLFW_PRESS)
+	{
+		if (Key == GLFW_KEY_ENTER)
+		{
+			State = WaitingToStart;
+		}
+		else if (Key == GLFW_KEY_BACKSPACE)
+		{
+			PlayerName = PlayerName.substr(0, PlayerName.length() - 1);
+		}
+		else if (Key >= GLFW_KEY_A && Key <= GLFW_KEY_Z && PlayerName.length() < 6)
+		{
+			PlayerName += Symbols[Key-GLFW_KEY_A];
+		}
 	}
 }
 
@@ -272,9 +298,13 @@ void Game::Render()
 	case InProgress:
 		Text->RenderText("Score: " + std::to_string(Score), 10.0f, 10.0f, 1.0f);
 		break;
+	case Pause:
+		Text->RenderText("PAUSE", Width / 2 - 60, Height / 2 - 5, 1.7f);
+		break;
 	case WaitingToStart:
 		Text->RenderText("Press SPACE to start", 250.0f, Height / 2, 1.0f);
 		Text->RenderText("Press M to watch highscores", 200.0f, Height / 2 + 35, 1.0f);
+		Text->RenderText("Press N to enter name", 240.0f, Height / 2 + 60, 1.0f);
 		break;
 	case GameState::GameOver:
 		Text->RenderText("GAME OVER", Width / 2 - 115, Height / 2 - 185, 1.7f);
@@ -283,6 +313,10 @@ void Game::Render()
 		break;
 	case AdditionlMenuOpened:
 		ShowHighScores();
+		break;
+	case NameInput:
+		Text->RenderText("Enter your name", Width / 2 - 200, Height / 2 - 165, 1.7f);
+		Text->RenderText(PlayerName, Width / 2 - 100, Height / 2 - 125, 1.7f);
 		break;
 	}
 }
