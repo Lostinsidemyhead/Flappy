@@ -42,6 +42,8 @@ private:
 	GameState State;
 	std::string PlayerName = "Player";
 
+	Actor* BackGround;
+
 	float PlayerVelocity = 200.0f;
 	Player* CurrentPlayer;
 	unsigned int Score;

@@ -20,14 +20,17 @@ void Game::Initialize()
 	
 	Sprite = new SpriteRenderer(ResourceManager::GetShader("Sprite"));
 
+	ResourceManager::LoadTexture("../Resources/Textures/BG.png", true, "BG");
 	ResourceManager::LoadTexture("../Resources/Textures/Obstacle.png", true, "Obstacle");
 	ResourceManager::LoadTexture("../Resources/Textures/Jellyfish.png", true, "Player");
-	
-	glm::vec2 PlayerPos = glm::vec2(PlayerSize.x, Height / 2.0f - PlayerSize.y / 2.0f);
 
+	BackGround = new Actor(glm::vec2(0.0f, 0.0f), glm::vec2(Width, Height), ResourceManager::GetTexture("BG"));
+
+	glm::vec2 PlayerPos = glm::vec2(PlayerSize.x, Height / 2.0f - PlayerSize.y / 2.0f);
 	CurrentPlayer = new Player(PlayerPos, PlayerSize, ResourceManager::GetTexture("Player"),
 								static_cast<float>(Height) - PlayerSize.y/2.0f);
 	
+
 	ObstaclesGen = new ObstaclesGenerator(0, Height, Width);
 	Obstacles.clear();
 	AddObstacle();
@@ -286,6 +289,7 @@ void Game::ProcessInput(int Key, int Action)
 
 void Game::Render()
 {
+	BackGround->Draw(*Sprite);
 	CurrentPlayer->Draw(*Sprite);
 
 	for (auto ObstacleItem : Obstacles)

@@ -20,9 +20,12 @@ float ObstaclesGenerator::GenerateObstacleHeight()
 	
 	if (HolePosY < TopLimit + HoleSize)
 	{
-		HolePosY += HoleSize;
+		HolePosY += BottomLimit/2;
 	}
-
+	if (HolePosY > BottomLimit)
+	{
+		HolePosY -= BottomLimit / 2;
+	}
 	return HolePosY;
 }
 
