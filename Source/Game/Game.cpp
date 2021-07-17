@@ -257,6 +257,10 @@ void Game::ProcessInput(int Key, int Action)
 		case InProgress:
 			State = Pause;
 			break;
+		case Pause:
+			Initialize();
+			State = WaitingToStart;
+			break;
 		default:
 			State = WaitingToStart;
 			break;
@@ -304,6 +308,8 @@ void Game::Render()
 		break;
 	case Pause:
 		Text->RenderText("PAUSE", Width / 2 - 60, Height / 2 - 5, 1.7f);
+		Text->RenderText("Press SPACE to return", 265.0f, Height / 2 + 60, 1.0f);
+		Text->RenderText("Press ESCAPE to quit", 275.0f, Height / 2 + 120, 1.0f);
 		break;
 	case WaitingToStart:
 		Text->RenderText("Press SPACE to start", 250.0f, Height / 2, 1.0f);

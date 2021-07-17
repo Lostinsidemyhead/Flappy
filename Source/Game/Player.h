@@ -14,7 +14,7 @@ public:
 	virtual void Move(glm::vec2 NewPosition) override;
 
 private:
-	float JumpHeight = 50.0f;
+	float JumpHeight = 75.0f;
 	float JumpSpeedCoef = 1.5f;
 	float MinBottomPosition;
 	float JumpPosition;
